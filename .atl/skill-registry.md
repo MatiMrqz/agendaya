@@ -1,0 +1,34 @@
+# Skill Registry
+
+This registry index contains all available skills and project conventions.
+
+## Project Conventions
+
+*No project convention files found.*
+
+## Skills
+
+| Skill Name | Scope | Description | Path |
+| --- | --- | --- | --- |
+| **accessibility** | `project` | Audit and improve web accessibility following WCAG 2.2 guidelines. Use when asked to improve accessibility, a11y audit, WCAG compliance, screen reader support, keyboard navigation, or make accessible. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/accessibility/SKILL.md) |
+| **branch-pr** | `user` | Create Gentle AI pull requests with issue-first checks. Trigger: creating, opening, or preparing PRs for review. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/branch-pr/SKILL.md) |
+| **chained-pr** | `user` | Trigger: PRs over 400 lines, stacked PRs, review slices. Split oversized changes into chained PRs that protect review focus. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/chained-pr/SKILL.md) |
+| **cognitive-doc-design** | `user` | Design docs that reduce cognitive load. Trigger: writing guides, READMEs, RFCs, onboarding, architecture, or review-facing docs. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/cognitive-doc-design/SKILL.md) |
+| **comment-writer** | `user` | Write warm, direct collaboration comments. Trigger: PR feedback, issue replies, reviews, Slack messages, or GitHub comments. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/comment-writer/SKILL.md) |
+| **frontend-design** | `project` | Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/frontend-design/SKILL.md) |
+| **go-testing** | `user` | Trigger: Go tests, go test coverage, Bubbletea teatest, golden files. Apply focused Go testing patterns. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/go-testing/SKILL.md) |
+| **issue-creation** | `user` | Create Gentle AI issues with issue-first checks. Trigger: creating GitHub issues, bug reports, or feature requests. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/issue-creation/SKILL.md) |
+| **judgment-day** | `user` | Trigger: judgment day, dual review, adversarial review, juzgar. Run blind dual review, fix confirmed issues, then re-judge. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/judgment-day/SKILL.md) |
+| **next-best-practices** | `project` | Next.js best practices - file conventions, RSC boundaries, data patterns, async APIs, metadata, error handling, route handlers, image/font optimization, bundling | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/next-best-practices/SKILL.md) |
+| **next-cache-components** | `project` | Next.js 16 Cache Components - PPR, use cache directive, cacheLife, cacheTag, updateTag | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/next-cache-components/SKILL.md) |
+| **next-upgrade** | `project` | Upgrade Next.js to the latest version following official migration guides and codemods | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/next-upgrade/SKILL.md) |
+| **nodejs-backend-patterns** | `project` | Build production-ready Node.js backend services with Express/Fastify, implementing middleware patterns, error handling, authentication, database integration, and API design best practices. Use when creating Node.js servers, REST APIs, GraphQL backends, or microservices architectures. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/nodejs-backend-patterns/SKILL.md) |
+| **nodejs-best-practices** | `project` | Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/nodejs-best-practices/SKILL.md) |
+| **seo** | `project` | Optimize for search engine visibility and ranking. Use when asked to improve SEO, optimize for search, fix meta tags, add structured data, sitemap optimization, or search engine optimization. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/seo/SKILL.md) |
+| **skill-creator** | `user` | Trigger: new skills, agent instructions, documenting AI usage patterns. Create LLM-first skills with valid frontmatter. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/skill-creator/SKILL.md) |
+| **skill-improver** | `user` | Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/skill-improver/SKILL.md) |
+| **tailwind-css-patterns** | `project` | Provides comprehensive Tailwind CSS utility-first styling patterns including responsive design, layout utilities, flexbox, grid, spacing, typography, colors, and modern CSS best practices. Use when styling React/Vue/Svelte components, building responsive layouts, implementing design systems, or optimizing CSS workflow. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/tailwind-css-patterns/SKILL.md) |
+| **typescript-advanced-types** | `project` | Master TypeScripts advanced type system including generics, conditional types, mapped types, template literals, and utility types for building type-safe applications. Use when implementing complex type logic, creating reusable type utilities, or ensuring compile-time type safety in TypeScript projects. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/typescript-advanced-types/SKILL.md) |
+| **vercel-composition-patterns** | `project` | React composition patterns that scale. Use when refactoring components with | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/composition-patterns/SKILL.md) |
+| **vercel-react-best-practices** | `project` | React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements. | [SKILL.md](file:///Users/matimrqz/Documents/agendaya/.agents/skills/react-best-practices/SKILL.md) |
+| **work-unit-commits** | `user` | Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code. | [SKILL.md](file:///Users/matimrqz/.gemini/skills/work-unit-commits/SKILL.md) |
