@@ -1,0 +1,32 @@
+[
+  {
+    "id": "new-booking",
+    "name": "Nueva Reserva",
+    "subject": "Updated Booking Subject",
+    "preheader": "",
+    "html": "<p>Updated Body</p>",
+    "status": "active",
+    "lastModified": "2026-06-20T21:40:37.608Z",
+    "lastModifiedBy": "Test Admin"
+  },
+  {
+    "id": "cancellation",
+    "name": "Cancelación de Cita",
+    "subject": "Cita cancelada - {{fecha}}",
+    "preheader": "Tu cita del {{fecha}} ha sido cancelada.",
+    "html": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Cita Cancelada</title><style>body{font-family:sans-serif;background-color:#f4f4f5;margin:0;padding:20px;}#card{background-color:#ffffff;border-radius:8px;padding:24px;max-width:600px;margin:0 auto;box-shadow:0 1px 3px rgba(0,0,0,0.1);}.title{color:#e11d48;font-size:20px;font-weight:600;margin-top:0;}.text{color:#52525b;font-size:16px;line-height:24px;}.button{display:inline-block;background-color:#18181b;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:500;margin-top:16px;}</style></head><body><div id=\"card\"><h1 class=\"title\">Cita Cancelada</h1><p class=\"text\">Hola, {{nombre}}.</p><p class=\"text\">Te informamos que tu cita programada para el día <strong>{{fecha}}</strong> a las <strong>{{hora}}</strong> ha sido cancelada.</p><p class=\"text\">Si considerás que esto es un error o querés agendar una nueva cita, podés hacerlo ingresando a nuestra agenda:</p><a href=\"{{enlace}}\" class=\"button\">Agendar Cita</a></div></body></html>",
+    "status": "active",
+    "lastModified": "2026-06-20T18:00:00.000Z",
+    "lastModifiedBy": "System"
+  },
+  {
+    "id": "confirmation",
+    "name": "Confirmación de Cita",
+    "subject": "Cita confirmada - {{fecha}}",
+    "preheader": "Te recordamos tu próxima cita del {{fecha}}.",
+    "html": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Cita Confirmada</title><style>body{font-family:sans-serif;background-color:#f4f4f5;margin:0;padding:20px;}#card{background-color:#ffffff;border-radius:8px;padding:24px;max-width:600px;margin:0 auto;box-shadow:0 1px 3px rgba(0,0,0,0.1);}.title{color:#16a34a;font-size:20px;font-weight:600;margin-top:0;}.text{color:#52525b;font-size:16px;line-height:24px;}.button{display:inline-block;background-color:#18181b;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:500;margin-top:16px;}</style></head><body><div id=\"card\"><h1 class=\"title\">¡Cita Confirmada!</h1><p class=\"text\">Hola, {{nombre}}.</p><p class=\"text\">Tu cita para el día <strong>{{fecha}}</strong> a las <strong>{{hora}}</strong> ha sido confirmada correctamente.</p><p class=\"text\">Para cualquier duda o cambio, podés ingresar al siguiente enlace:</p><a href=\"{{enlace}}\" class=\"button\">Gestionar Cita</a></div></body></html>",
+    "status": "active",
+    "lastModified": "2026-06-20T18:00:00.000Z",
+    "lastModifiedBy": "System"
+  }
+]
