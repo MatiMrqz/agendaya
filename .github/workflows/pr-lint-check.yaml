@@ -27,20 +27,26 @@ jobs:
           # fetch-depth 0 is required so `git diff` can see the base branch commits.
           fetch-depth: 0
 
-      # ── 2. Set up Node.js ──────────────────────────────────────────────────
+      # ── 2. Setup pnpm ─────────────────────────────────────────────────
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: latest
+          
+      # ── 3. Set up Node.js ──────────────────────────────────────────────────
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           # Uncomment and set a version if you don't have an .nvmrc file:
           # node-version: '22'
-          cache: pnpm
+          cache: 'pnpm'
 
-      # ── 3. Install dependencies ────────────────────────────────────────────
+      # ── 4. Install dependencies ────────────────────────────────────────────
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # ── 4. Collect changed JS/TS files ────────────────────────────────────
+      # ── 5. Collect changed JS/TS files ────────────────────────────────────
       #
       # We diff against the PR base branch and filter to JS/TS files only.
       # Deleted files (--diff-filter=d) are excluded — ESLint can't lint them.
@@ -62,7 +68,7 @@ jobs:
             echo "$FILES" > changed-files.txt
           fi
 
-      # ── 5. Run ESLint — always succeeds so the next step can read the report
+      # ── 6. Run ESLint — always succeeds so the next step can read the report
       #
       # `xargs` feeds each newline-separated filename as a SEPARATE argument,
       # which is the only correct way to pass a dynamic file list to ESLint.
@@ -79,7 +85,7 @@ jobs:
         if: steps.changed.outputs.skip == 'true'
         run: echo '[]' > eslint-report.json
 
-      # ── 6. Parse report · post PR comment · block on errors ────────────────
+      # ── 7. Parse report · post PR comment · block on errors ────────────────
       - name: Post lint results as PR comment
         uses: actions/github-script@v7
         with:
