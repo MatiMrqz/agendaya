@@ -1,0 +1,193 @@
+name: PR — Lint Check
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+# Cancel any in-progress run for the same PR branch so stale checks don't pile up.
+concurrency:
+  group: lint-${{ github.head_ref }}
+  cancel-in-progress: true
+
+# `pull-requests: write` is required to post/update the PR comment.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout source ─────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          # fetch-depth 0 is required so `git diff` can see the base branch commits.
+          fetch-depth: 0
+
+      # ── 2. Set up Node.js ──────────────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          # Uncomment and set a version if you don't have an .nvmrc file:
+          # node-version: '22'
+          cache: pnpm
+
+      # ── 3. Install dependencies ────────────────────────────────────────────
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ── 4. Collect changed JS/TS files ────────────────────────────────────
+      #
+      # We diff against the PR base branch and filter to JS/TS files only.
+      # Deleted files (--diff-filter=d) are excluded — ESLint can't lint them.
+      - name: Collect changed files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only --diff-filter=d \
+            origin/${{ github.base_ref }}...HEAD \
+            | grep -E '\.(js|ts|tsx)$' || true)
+
+          if [ -z "$FILES" ]; then
+            echo "No JS/TS files changed — skipping lint."
+            echo 'skip=true' >> $GITHUB_OUTPUT
+          else
+            echo "Files to lint:"
+            echo "$FILES"
+            echo 'skip=false' >> $GITHUB_OUTPUT
+            # Write file list to a temp file to safely hand off to the next step.
+            echo "$FILES" > changed-files.txt
+          fi
+
+      # ── 5. Run ESLint — always succeeds so the next step can read the report
+      #
+      # `xargs` feeds each newline-separated filename as a SEPARATE argument,
+      # which is the only correct way to pass a dynamic file list to ESLint.
+      # The github-script step is the single source of truth for pass/fail.
+      - name: Run ESLint
+        if: steps.changed.outputs.skip == 'false'
+        run: |
+          cat changed-files.txt | xargs \
+            npx eslint --format json --output-file eslint-report.json \
+            || true
+
+      # Write an empty report so the comment step always has a file to read.
+      - name: Write empty report (no files changed)
+        if: steps.changed.outputs.skip == 'true'
+        run: echo '[]' > eslint-report.json
+
+      # ── 6. Parse report · post PR comment · block on errors ────────────────
+      - name: Post lint results as PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs   = require('fs');
+            const path = require('path');
+
+            // ── Parse JSON report ──────────────────────────────────────────
+            const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
+
+            let totalErrors   = 0;
+            let totalWarnings = 0;
+            const rows        = [];
+
+            for (const file of report) {
+              if (!file.messages.length) continue;
+
+              totalErrors   += file.errorCount;
+              totalWarnings += file.warningCount;
+
+              // Make the path relative so it's short and readable in the comment.
+              const relPath = file.filePath.replace(
+                process.env.GITHUB_WORKSPACE + path.sep,
+                ''
+              );
+
+              for (const msg of file.messages) {
+                const icon     = msg.severity === 2 ? '🔴' : '🟡';
+                const severity = msg.severity === 2 ? 'Error'   : 'Warning';
+                const rule     = msg.ruleId ? `\`${msg.ruleId}\`` : '—';
+                // Escape pipes so the table doesn't break.
+                const message  = msg.message.replace(/\|/g, '\\|');
+
+                rows.push(
+                  `| ${icon} **${severity}** | \`${relPath}\` | L${msg.line}:C${msg.column} | ${message} | ${rule} |`
+                );
+              }
+            }
+
+            // ── Build comment body ─────────────────────────────────────────
+            const hasIssues = rows.length > 0;
+            const statusIcon = totalErrors > 0
+              ? '❌'
+              : totalWarnings > 0
+                ? '⚠️'
+                : '✅';
+            const statusText = totalErrors > 0
+              ? 'Failed — errors must be fixed before merging'
+              : totalWarnings > 0
+                ? 'Passed with warnings'
+                : 'Passed — no issues found';
+
+            let body = [
+              `## ${statusIcon} ESLint Report`,
+              '',
+              `**Status:** ${statusText}  `,
+              `**Errors:** ${totalErrors} &nbsp;·&nbsp; **Warnings:** ${totalWarnings}`,
+              '',
+            ].join('\n');
+
+            if (hasIssues) {
+              body += [
+                '| Severity | File | Location | Message | Rule |',
+                '|---|---|---|---|---|',
+                ...rows,
+              ].join('\n');
+            } else {
+              body += '_No linting issues found — great job! 🎉_';
+            }
+
+            body += `\n\n<sub>Updated by the **PR — Lint Check** workflow · run [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})</sub>`;
+
+            // ── Upsert comment (update existing bot comment if present) ────
+            const { data: comments } = await github.rest.issues.listComments({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(
+              c => c.user.type === 'Bot' && c.body.includes('ESLint Report')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+              core.info(`Updated existing lint comment (id: ${existing.id})`);
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+              core.info('Posted new lint comment.');
+            }
+
+            // ── Block the PR if there are errors ──────────────────────────
+            if (totalErrors > 0) {
+              core.setFailed(
+                `ESLint found ${totalErrors} error(s) and ${totalWarnings} warning(s). Fix all errors before merging.`
+              );
+            } else if (totalWarnings > 0) {
+              core.warning(
+                `ESLint found ${totalWarnings} warning(s). No errors — PR is not blocked.`
+              );
+            }
