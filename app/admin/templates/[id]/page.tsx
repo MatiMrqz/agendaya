@@ -254,7 +254,7 @@ export default function TemplateEditorPage() {
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const text = html;
+    const text = textarea.value;
 
     const newHtml = text.substring(0, start) + variableName + text.substring(end);
     setHtml(newHtml);
