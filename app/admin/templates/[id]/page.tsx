@@ -453,7 +453,7 @@ export default function TemplateEditorPage() {
             </div>
 
             {/* Email Metadata Card */}
-            <div className="p-4 border-b border-zinc-150 dark:border-zinc-850 bg-zinc-50/30 dark:bg-zinc-900/50 space-y-1.5 text-xs text-zinc-600 dark:text-zinc-400 font-medium">
+            <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/50 space-y-1.5 text-xs text-zinc-600 dark:text-zinc-400 font-medium">
               <p>
                 <span className="text-zinc-400 font-normal">De:</span>{' '}
                 <span className="text-zinc-800 dark:text-zinc-200 font-semibold">
