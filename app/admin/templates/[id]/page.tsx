@@ -397,7 +397,7 @@ export default function TemplateEditorPage() {
                     key={variable}
                     type="button"
                     onClick={() => insertVariable(variable)}
-                    className="inline-flex items-center gap-1 rounded bg-zinc-100 dark:bg-zinc-850 hover:bg-zinc-200 dark:hover:bg-zinc-800 px-2.5 py-1 text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors border border-zinc-200/50 dark:border-zinc-800"
+                    className="inline-flex items-center gap-1 rounded bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-800 px-2.5 py-1 text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors border border-zinc-200/50 dark:border-zinc-800"
                   >
                     {variable}
                   </button>
