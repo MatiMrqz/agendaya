@@ -298,6 +298,7 @@ export default function TemplateEditorPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/templates"
+            aria-label="Volver a la lista de plantillas"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
           >
             <span className="text-zinc-600 dark:text-zinc-400">&larr;</span>
