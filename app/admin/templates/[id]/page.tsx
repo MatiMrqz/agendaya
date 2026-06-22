@@ -144,6 +144,8 @@ export default function TemplateEditorPage() {
     }
 
     if (templateId) {
+      setLoading(true);
+      setError(null);
       loadTemplate();
     }
   }, [templateId]);
