@@ -87,10 +87,10 @@ describe('TemplateEditorPage Component', () => {
     htmlTextarea.focus();
     htmlTextarea.setSelectionRange(17, 17); // End of value
 
-    const varButton = screen.getByRole('button', { name: /\{\{nombre\}\}/i });
+    const varButton = screen.getByRole('button', { name: /\{\{fecha\}\}/i });
     fireEvent.click(varButton);
 
-    expect(htmlTextarea.value).toContain('{{nombre}}');
+    expect(htmlTextarea.value).toContain('{{fecha}}');
   });
 
   it('validates required fields on save', async () => {
