@@ -482,7 +482,7 @@ export default function TemplateEditorPage() {
             <div className="bg-white min-h-[350px] p-1 flex">
               <iframe
                 title="Preview"
-                sandbox="allow-same-origin"
+                sandbox=""
                 srcDoc={previewHtml || '<p style="font-family: sans-serif; color: #71717a; text-align: center; margin-top: 100px;">Comenzá a escribir HTML para ver la vista previa...</p>'}
                 className="w-full flex-grow border-0 rounded"
                 style={{ minHeight: '350px' }}
