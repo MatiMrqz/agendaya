@@ -121,6 +121,8 @@ export default function TemplateEditorPage() {
   useEffect(() => {
     async function loadTemplate() {
       try {
+        setLoading(true);
+        setError(null);
         const res = await fetch('/api/notifications/templates');
         if (!res.ok) {
           throw new Error('No se pudieron cargar las plantillas.');
@@ -144,8 +146,6 @@ export default function TemplateEditorPage() {
     }
 
     if (templateId) {
-      setLoading(true);
-      setError(null);
       loadTemplate();
     }
   }, [templateId]);
