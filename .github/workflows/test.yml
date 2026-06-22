@@ -1,0 +1,125 @@
+name: Unit Tests Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Vitest Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: latest
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        id: vitest
+        env:
+          FORCE_COLOR: '0'
+          NO_COLOR: 'true'
+        run: |
+          pnpm run test --reporter=default --reporter=json --outputFile=test-results.json > test-output.txt 2>&1
+          exit_code=$?
+          cat test-output.txt
+          exit $exit_code
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            const resultsPath = 'test-results.json';
+            const logPath = 'test-output.txt';
+            
+            let body = '';
+            const success = ${{ steps.vitest.outcome == 'success' }};
+            const title = success ? '✅ Unit Tests Passed' : '❌ Unit Tests Failed';
+            
+            if (fs.existsSync(resultsPath)) {
+              try {
+                const data = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+                
+                const total = data.numTotalTests || 0;
+                const passed = data.numPassedTests || 0;
+                const failed = data.numFailedTests || 0;
+                
+                body += `### ${title}\n\n`;
+                body += `* **Total Tests:** ${total}\n`;
+                body += `* **Passed:** ${passed} ✅\n`;
+                body += `* **Failed:** ${failed} ${failed > 0 ? '❌' : '✅'}\n\n`;
+                
+                body += `| Test Suite | Status | Passed | Failed |\n`;
+                body += `| :--- | :---: | :---: | :---: |\n`;
+                
+                const detailedRows = [];
+                
+                for (const suite of data.testResults) {
+                  const filename = suite.name.split('/').pop();
+                  const suiteName = filename.replace('.test.ts', '');
+                  
+                  let suitePassed = 0;
+                  let suiteFailed = 0;
+                  
+                  for (const assertion of suite.assertionResults) {
+                    const statusEmoji = assertion.status === 'passed' ? '✅' : '❌';
+                    if (assertion.status === 'passed') {
+                      suitePassed++;
+                    } else {
+                      suiteFailed++;
+                    }
+                    
+                    let details = '';
+                    if (assertion.failureMessages && assertion.failureMessages.length > 0) {
+                      const cleanMsg = assertion.failureMessages.join('\n').replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+                      details = `<br><pre><code>${cleanMsg}</code></pre>`;
+                    }
+                    
+                    detailedRows.push(`| ${assertion.title} | ${statusEmoji} | ${suiteName}${details} |`);
+                  }
+                  
+                  const suiteStatus = suiteFailed === 0 ? '✅' : '❌';
+                  body += `| **${suiteName}** | ${suiteStatus} | ${suitePassed} | ${suiteFailed} |\n`;
+                }
+                
+                body += `\n<details>\n<summary>🔍 View Detailed Test Cases</summary>\n\n`;
+                body += `| Test Case | Status | Suite |\n`;
+                body += `| :--- | :---: | :--- |\n`;
+                body += detailedRows.join('\n') + `\n\n</details>\n`;
+              } catch (err) {
+                body = `### ${title}\n\nFailed to parse test results JSON: ${err.message}`;
+              }
+            } else if (fs.existsSync(logPath)) {
+              const output = fs.readFileSync(logPath, 'utf8');
+              body = `### ${title}\n\n\`\`\`text\n${output}\n\`\`\``;
+            } else {
+              body = `### ${title}\n\nNo test results file or log output was found.`;
+            }
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
