@@ -17,9 +17,32 @@ interface Template {
 
 const FACTORY_DEFAULTS: Record<string, { subject: string; preheader: string; html: string }> = {
   'new-booking': {
-    subject: '¡Reserva de {{nombre}}!',
-    preheader: 'Cita el {{fecha}}',
-    html: '<p>Hola {{nombre}}</p>'
+    subject: 'Nueva reserva confirmada - {{fecha}}',
+    preheader: 'Tu reserva para el {{fecha}} fue registrada.',
+    html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Reserva</title>
+  <style>
+    body{font-family:sans-serif;background-color:#f4f4f5;margin:0;padding:20px;}
+    #card{background-color:#ffffff;border-radius:8px;padding:24px;max-width:600px;margin:0 auto;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+    .title{color:#2563eb;font-size:20px;font-weight:600;margin-top:0;}
+    .text{color:#52525b;font-size:16px;line-height:24px;}
+    .button{display:inline-block;background-color:#18181b;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:500;margin-top:16px;}
+  </style>
+</head>
+<body>
+  <div id="card">
+    <h1 class="title">¡Nueva Reserva!</h1>
+    <p class="text">Hola, {{nombre}}.</p>
+    <p class="text">Registramos tu reserva para el día <strong>{{fecha}}</strong> a las <strong>{{hora}}</strong>.</p>
+    <p class="text">Podés ver los detalles o gestionar tu cita ingresando al siguiente enlace:</p>
+    <a href="{{enlace}}" class="button">Ver Reserva</a>
+  </div>
+</body>
+</html>`
   },
   'cancellation': {
     subject: 'Cita cancelada - {{fecha}}',
