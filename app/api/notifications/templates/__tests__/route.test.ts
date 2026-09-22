@@ -37,8 +37,9 @@ vi.mock('fs', async (importOriginal) => {
       lastModifiedBy: 'System'
     }
   ];
-  return {
-    ...actual,
+  // La ruta usa `import fs from 'fs'` (default export): hay que mockear también `default`,
+  // si no, el test lee y escribe el data/templates.json real.
+  const overrides = {
     existsSync: (filePath: string) => {
       if (typeof filePath === 'string' && filePath.endsWith('templates.json')) return true;
       return actual.existsSync(filePath);
@@ -59,6 +60,7 @@ vi.mock('fs', async (importOriginal) => {
       return write(filePath, content, options);
     }
   };
+  return { ...actual, ...overrides, default: { ...actual, ...overrides } };
 });
 
 describe('GET /api/notifications/templates', () => {
