@@ -34,16 +34,19 @@ function Toggle({
   onChange,
   disabled,
   labelId,
+  'data-cy': dataCy,
 }: {
   checked: boolean;
   onChange: () => void;
   disabled?: boolean;
   labelId: string;
+  'data-cy'?: string;
 }) {
   return (
     <button
       type="button"
       role="switch"
+      data-cy={dataCy}
       aria-checked={checked}
       aria-labelledby={labelId}
       onClick={onChange}
@@ -162,7 +165,10 @@ export default function NotificationPreferencesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
+      <div
+        data-cy="preferences-loading"
+        className="min-h-[400px] flex items-center justify-center"
+      >
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
       </div>
     );
@@ -170,7 +176,10 @@ export default function NotificationPreferencesPage() {
 
   if (error && !loaded) {
     return (
-      <div className="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 rounded-lg text-rose-600 dark:text-rose-400 font-medium">
+      <div
+        data-cy="preferences-error"
+        className="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 rounded-lg text-rose-600 dark:text-rose-400 font-medium"
+      >
         Error: {error}
       </div>
     );
@@ -179,7 +188,10 @@ export default function NotificationPreferencesPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-extrabold tracking-tight">
+        <h1
+          data-cy="preferences-heading"
+          className="text-3xl font-extrabold tracking-tight"
+        >
           Preferencias de Notificación
         </h1>
         <p className="text-zinc-500 dark:text-zinc-400">
@@ -189,13 +201,19 @@ export default function NotificationPreferencesPage() {
       </div>
 
       {successMessage && (
-        <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 rounded-lg text-emerald-700 dark:text-emerald-400 font-medium">
+        <div
+          data-cy="preferences-success-msg"
+          className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 rounded-lg text-emerald-700 dark:text-emerald-400 font-medium"
+        >
           ✓ {successMessage}
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 rounded-lg text-rose-600 dark:text-rose-400 font-medium">
+        <div
+          data-cy="preferences-error-msg"
+          className="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 rounded-lg text-rose-600 dark:text-rose-400 font-medium"
+        >
           Error: {error}
         </div>
       )}
@@ -228,6 +246,7 @@ export default function NotificationPreferencesPage() {
                 </p>
               </div>
               <Toggle
+                data-cy={`toggle-${item.key}`}
                 checked={preferences[item.key]}
                 onChange={() => handleToggle(item.key)}
                 disabled={saving}
@@ -240,6 +259,7 @@ export default function NotificationPreferencesPage() {
         <div className="px-6 py-4 bg-zinc-50/50 dark:bg-zinc-950/30 border-t border-zinc-200 dark:border-zinc-800">
           <button
             type="button"
+            data-cy="reset-preferences-btn"
             onClick={() => setShowResetModal(true)}
             disabled={saving}
             className="inline-flex h-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors shadow-sm disabled:opacity-50"
@@ -250,9 +270,15 @@ export default function NotificationPreferencesPage() {
       </div>
 
       {showResetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div
+          data-cy="reset-modal"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        >
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
-            <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+            <h3
+              data-cy="reset-modal-title"
+              className="text-lg font-bold text-zinc-900 dark:text-white"
+            >
               ¿Restablecer configuración predeterminada?
             </h3>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
@@ -262,6 +288,7 @@ export default function NotificationPreferencesPage() {
             <div className="flex justify-end gap-3">
               <button
                 type="button"
+                data-cy="reset-cancel-btn"
                 onClick={() => setShowResetModal(false)}
                 className="inline-flex h-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
               >
@@ -269,6 +296,7 @@ export default function NotificationPreferencesPage() {
               </button>
               <button
                 type="button"
+                data-cy="reset-confirm-btn"
                 onClick={handleResetConfirm}
                 className="inline-flex h-9 items-center justify-center rounded-lg bg-rose-600 hover:bg-rose-700 px-4 text-sm font-semibold text-white transition-colors shadow-sm"
               >

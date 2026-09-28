@@ -276,7 +276,7 @@ export default function TemplateEditorPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
+      <div data-cy="editor-loading" className="min-h-[400px] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
       </div>
     );
@@ -284,7 +284,7 @@ export default function TemplateEditorPage() {
 
   if (error || !template) {
     return (
-      <div className="p-6 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 rounded-xl text-rose-600 dark:text-rose-400 font-medium">
+      <div data-cy="editor-error" className="p-6 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 rounded-xl text-rose-600 dark:text-rose-400 font-medium">
         <p className="mb-4">Error: {error || 'Plantilla no encontrada'}</p>
         <Link href="/admin/templates" className="text-sm font-semibold underline hover:text-rose-700 dark:hover:text-rose-300">
           Volver a la lista
@@ -300,13 +300,14 @@ export default function TemplateEditorPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/templates"
+            data-cy="back-to-templates-link"
             aria-label="Volver a la lista de plantillas"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
           >
             <span className="text-zinc-600 dark:text-zinc-400">&larr;</span>
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight">
+            <h1 data-cy="editor-heading" className="text-2xl font-extrabold tracking-tight">
               Editar Plantilla: {template.name}
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -319,6 +320,7 @@ export default function TemplateEditorPage() {
           {FACTORY_DEFAULTS[templateId] && (
             <button
               type="button"
+              data-cy="reset-template-btn"
               onClick={() => setShowResetModal(true)}
               className="inline-flex h-10 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors shadow-sm"
             >
@@ -328,6 +330,7 @@ export default function TemplateEditorPage() {
 
           <button
             type="button"
+            data-cy="save-template-btn"
             onClick={() => handleSave()}
             disabled={saving}
             className="inline-flex h-10 items-center justify-center rounded-lg bg-emerald-600 dark:bg-emerald-500 px-5 text-sm font-semibold text-white hover:bg-emerald-700 dark:hover:bg-emerald-600 disabled:opacity-50 transition-colors shadow-md shadow-emerald-500/10"
@@ -338,7 +341,7 @@ export default function TemplateEditorPage() {
       </div>
 
       {saveSuccess && (
-        <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 rounded-lg text-emerald-700 dark:text-emerald-400 font-medium animate-fade-in">
+        <div data-cy="save-success-msg" className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 rounded-lg text-emerald-700 dark:text-emerald-400 font-medium animate-fade-in">
           ✓ ¡La plantilla se guardó correctamente!
         </div>
       )}
@@ -346,7 +349,7 @@ export default function TemplateEditorPage() {
       {/* Main Workspace Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         {/* Left Column: Form Editor */}
-        <form onSubmit={handleSave} className="space-y-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
+        <form data-cy="editor-form" onSubmit={handleSave} className="space-y-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
           <div className="space-y-4">
             {/* Subject Input */}
             <div className="flex flex-col gap-1.5">
@@ -355,6 +358,7 @@ export default function TemplateEditorPage() {
               </label>
               <input
                 id="subject"
+                data-cy="subject-input"
                 type="text"
                 value={subject}
                 onChange={(e) => {
@@ -369,7 +373,7 @@ export default function TemplateEditorPage() {
                 placeholder="Escribí el asunto del correo..."
               />
               {validationErrors.subject && (
-                <span className="text-xs text-rose-500">El asunto es obligatorio.</span>
+                <span data-cy="subject-error" className="text-xs text-rose-500">El asunto es obligatorio.</span>
               )}
             </div>
 
@@ -380,6 +384,7 @@ export default function TemplateEditorPage() {
               </label>
               <input
                 id="preheader"
+                data-cy="preheader-input"
                 type="text"
                 value={preheader}
                 onChange={(e) => setPreheader(e.target.value)}
@@ -398,6 +403,7 @@ export default function TemplateEditorPage() {
                   <button
                     key={variable}
                     type="button"
+                    data-cy={`insert-var-${variable.replace(/[{}]/g, '')}`}
                     onClick={() => insertVariable(variable)}
                     className="inline-flex items-center gap-1 rounded bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-800 px-2.5 py-1 text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors border border-zinc-200/50 dark:border-zinc-800"
                   >
@@ -414,6 +420,7 @@ export default function TemplateEditorPage() {
               </label>
               <textarea
                 id="html"
+                data-cy="html-textarea"
                 ref={textareaRef}
                 value={html}
                 onChange={(e) => {
@@ -429,7 +436,7 @@ export default function TemplateEditorPage() {
                 placeholder="Escribí el código HTML aquí..."
               />
               {validationErrors.html && (
-                <span className="text-xs text-rose-500">El cuerpo HTML es obligatorio.</span>
+                <span data-cy="html-error" className="text-xs text-rose-500">El cuerpo HTML es obligatorio.</span>
               )}
             </div>
           </div>
@@ -483,6 +490,7 @@ export default function TemplateEditorPage() {
             {/* Rendered HTML inside sandboxed iframe */}
             <div className="bg-white min-h-[350px] p-1 flex">
               <iframe
+                data-cy="preview-iframe"
                 title="Preview"
                 sandbox=""
                 srcDoc={previewHtml || '<p style="font-family: sans-serif; color: #71717a; text-align: center; margin-top: 100px;">Comenzá a escribir HTML para ver la vista previa...</p>'}
@@ -505,6 +513,7 @@ export default function TemplateEditorPage() {
               <div className="flex-grow flex flex-col gap-1">
                 <input
                   type="email"
+                  data-cy="test-email-input"
                   value={testEmail}
                   onChange={(e) => setTestEmail(e.target.value)}
                   className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
@@ -515,6 +524,7 @@ export default function TemplateEditorPage() {
 
               <button
                 type="button"
+                data-cy="send-test-btn"
                 onClick={handleSendTest}
                 disabled={sendingTest}
                 className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 px-4 text-sm font-semibold text-white dark:text-zinc-900 disabled:opacity-50 transition-colors shadow-sm shrink-0"
@@ -524,12 +534,12 @@ export default function TemplateEditorPage() {
             </div>
 
             {testSuccess && (
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+              <p data-cy="test-success-msg" className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                 {testSuccess}
               </p>
             )}
             {testError && (
-              <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">
+              <p data-cy="test-error-msg" className="text-xs text-rose-600 dark:text-rose-400 font-medium">
                 Error: {testError}
               </p>
             )}
@@ -539,7 +549,7 @@ export default function TemplateEditorPage() {
 
       {/* Reset Confirmation Modal */}
       {showResetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div data-cy="reset-template-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
             <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
               ¿Restaurar valores de fábrica?
@@ -550,6 +560,7 @@ export default function TemplateEditorPage() {
             <div className="flex justify-end gap-3">
               <button
                 type="button"
+                data-cy="reset-template-cancel-btn"
                 onClick={() => setShowResetModal(false)}
                 className="inline-flex h-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
               >
@@ -557,6 +568,7 @@ export default function TemplateEditorPage() {
               </button>
               <button
                 type="button"
+                data-cy="reset-template-confirm-btn"
                 onClick={handleResetToDefault}
                 className="inline-flex h-9 items-center justify-center rounded-lg bg-rose-600 hover:bg-rose-700 px-4 text-sm font-semibold text-white transition-colors shadow-sm"
               >
