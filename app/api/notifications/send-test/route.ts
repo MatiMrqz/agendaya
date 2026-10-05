@@ -8,6 +8,9 @@ const mockVariables: Record<string, string> = {
   enlace: 'https://agendaya.app/citas/test-123'
 };
 
+// Formato mínimo: texto@dominio.extensión, sin espacios (CP-016)
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function interpolateVariables(template: string, vars: Record<string, string>): string {
   return template.replace(/\{\{(\w+)\}\}/g, (match, key) => vars[key] || match);
 }
@@ -19,6 +22,10 @@ export async function POST(request: NextRequest) {
 
     if (!to || to.trim() === '') {
       return NextResponse.json({ error: 'La dirección de correo de destino es obligatoria' }, { status: 400 });
+    }
+
+    if (!EMAIL_REGEX.test(to.trim())) {
+      return NextResponse.json({ error: 'El formato del correo de destino no es válido' }, { status: 400 });
     }
 
     if (!templateId || templateId.trim() === '') {
