@@ -265,3 +265,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,visualstudiocode,node,nextjs
+
+# Cypress evidence is generated locally; retain it for the TP6 report.
+/cypress/screenshots/
+/cypress/videos/
+/cypress/downloads/
+/cypress/results/
