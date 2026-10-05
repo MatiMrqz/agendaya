@@ -3,6 +3,8 @@ name: PR — Lint Check
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+    branches:
+      - develop
 
 # Cancel any in-progress run for the same PR branch so stale checks don't pile up.
 concurrency:
@@ -32,7 +34,7 @@ jobs:
         uses: pnpm/action-setup@v5
         with:
           version: latest
-          
+
       # ── 3. Set up Node.js ──────────────────────────────────────────────────
       - name: Set up Node.js
         uses: actions/setup-node@v6

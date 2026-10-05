@@ -3,6 +3,8 @@ name: Unit Tests Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    branches:
+      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -52,36 +54,36 @@ jobs:
             const fs = require('fs');
             const resultsPath = 'test-results.json';
             const logPath = 'test-output.txt';
-            
+
             let body = '';
             const success = ${{ steps.vitest.outcome == 'success' }};
             const title = success ? '✅ Unit Tests Passed' : '❌ Unit Tests Failed';
-            
+
             if (fs.existsSync(resultsPath)) {
               try {
                 const data = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
-                
+
                 const total = data.numTotalTests || 0;
                 const passed = data.numPassedTests || 0;
                 const failed = data.numFailedTests || 0;
-                
+
                 body += `### ${title}\n\n`;
                 body += `* **Total Tests:** ${total}\n`;
                 body += `* **Passed:** ${passed} ✅\n`;
                 body += `* **Failed:** ${failed} ${failed > 0 ? '❌' : '✅'}\n\n`;
-                
+
                 body += `| Test Suite | Status | Passed | Failed |\n`;
                 body += `| :--- | :---: | :---: | :---: |\n`;
-                
+
                 const detailedRows = [];
-                
+
                 for (const suite of data.testResults) {
                   const filename = suite.name.split('/').pop();
                   const suiteName = filename.replace('.test.ts', '');
-                  
+
                   let suitePassed = 0;
                   let suiteFailed = 0;
-                  
+
                   for (const assertion of suite.assertionResults) {
                     const statusEmoji = assertion.status === 'passed' ? '✅' : '❌';
                     if (assertion.status === 'passed') {
@@ -89,20 +91,20 @@ jobs:
                     } else {
                       suiteFailed++;
                     }
-                    
+
                     let details = '';
                     if (assertion.failureMessages && assertion.failureMessages.length > 0) {
                       const cleanMsg = assertion.failureMessages.join('\n').replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
                       details = `<br><pre><code>${cleanMsg}</code></pre>`;
                     }
-                    
+
                     detailedRows.push(`| ${assertion.title} | ${statusEmoji} | ${suiteName}${details} |`);
                   }
-                  
+
                   const suiteStatus = suiteFailed === 0 ? '✅' : '❌';
                   body += `| **${suiteName}** | ${suiteStatus} | ${suitePassed} | ${suiteFailed} |\n`;
                 }
-                
+
                 body += `\n<details>\n<summary>🔍 View Detailed Test Cases</summary>\n\n`;
                 body += `| Test Case | Status | Suite |\n`;
                 body += `| :--- | :---: | :--- |\n`;
@@ -116,7 +118,7 @@ jobs:
             } else {
               body = `### ${title}\n\nNo test results file or log output was found.`;
             }
-            
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
