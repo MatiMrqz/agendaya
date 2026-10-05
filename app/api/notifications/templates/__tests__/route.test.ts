@@ -129,4 +129,33 @@ describe('POST /api/notifications/templates', () => {
     const data = await res.json();
     expect(data.error).toBe('El cuerpo de la plantilla es obligatorio');
   });
+  
+  it('returns 404 and does not modify templates when the template does not exist', async () => {
+    // Arrange: estado de las plantillas antes de la solicitud
+    const before = await (await GET()).json();
+    const payload = {
+      id: 'template-inexistente',
+      subject: 'Asunto de prueba',
+      html: '<p>Contenido de prueba</p>',
+      status: 'active',
+      lastModifiedBy: 'Test Admin'
+    };
+    const req = new NextRequest('http://localhost/api/notifications/templates', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    // Act
+    const res = await POST(req);
+
+    // Assert: error controlado
+    expect(res.status).toBe(404);
+    const data = await res.json();
+    expect(data.error).toBe('Plantilla no encontrada');
+
+    // Assert: no se crea una plantilla nueva ni se modifica una existente
+    const after = await (await GET()).json();
+    expect(after).toEqual(before);
+    expect(after.some((t: { id: string }) => t.id === 'template-inexistente')).toBe(false);
+  });
 });
