@@ -129,4 +129,23 @@ describe('POST /api/notifications/templates', () => {
     const data = await res.json();
     expect(data.error).toBe('El cuerpo de la plantilla es obligatorio');
   });
+  it('fails if html contains only empty tags', async () => {
+    const badPayload = {
+      id: 'new-booking',
+      subject: 'Subject',
+      html: '<p></p>',
+      status: 'active',
+      lastModifiedBy: 'Test Admin'
+    };
+
+    const req = new NextRequest('http://localhost/api/notifications/templates', {
+      method: 'POST',
+      body: JSON.stringify(badPayload)
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('El cuerpo de la plantilla es obligatorio');
+  });
 });
