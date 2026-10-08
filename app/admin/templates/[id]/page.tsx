@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { hasRenderableContent } from '@/app/lib/html-utils';
 
 interface Template {
   id: string;
@@ -159,7 +160,7 @@ export default function TemplateEditorPage() {
     if (!subject.trim()) {
       errors.subject = true;
     }
-    if (!html.trim()) {
+    if (!hasRenderableContent(html)) {
       errors.html = true;
     }
 
@@ -425,7 +426,7 @@ export default function TemplateEditorPage() {
                 value={html}
                 onChange={(e) => {
                   setHtml(e.target.value);
-                  if (e.target.value.trim()) {
+                  if (hasRenderableContent(e.target.value)) {
                     setValidationErrors((prev) => ({ ...prev, html: false }));
                   }
                 }}

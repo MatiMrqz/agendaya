@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { hasRenderableContent } from '@/app/lib/html-utils';
 
 const DB_PATH = path.join(process.cwd(), 'data/templates.json');
 
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (!subject || subject.trim() === '') {
       return NextResponse.json({ error: 'El asunto es obligatorio' }, { status: 400 });
     }
-    if (!html || html.trim() === '') {
+    if (!hasRenderableContent(html)) {
       return NextResponse.json({ error: 'El cuerpo de la plantilla es obligatorio' }, { status: 400 });
     }
 

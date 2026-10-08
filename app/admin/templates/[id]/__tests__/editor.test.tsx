@@ -127,4 +127,22 @@ describe('TemplateEditorPage Component', () => {
       expect(globalThis.fetch).toHaveBeenCalledWith('/api/notifications/send-test', expect.any(Object));
     });
   });
+  it('validates empty html tags like <p></p> on save', async () => {
+    render(<TemplateEditorPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Editor HTML/i)).toBeInTheDocument();
+    });
+
+    const htmlTextarea = screen.getByLabelText(/Editor HTML/i) as HTMLTextAreaElement;
+    const saveButton = screen.getByRole('button', { name: /Guardar Plantilla/i });
+
+    fireEvent.change(htmlTextarea, { target: { value: '<p></p>' } });
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(htmlTextarea.className).toContain('border-rose-500');
+      expect(screen.getByText('El cuerpo HTML es obligatorio.')).toBeInTheDocument();
+    });
+  });
 });
